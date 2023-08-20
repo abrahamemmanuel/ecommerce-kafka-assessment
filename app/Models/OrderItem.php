@@ -11,7 +11,7 @@ class OrderItem extends Model
 {
     use HasFactory;
 
-    protected array $fillable = [
+    protected $fillable = [
         'order_id',
         'product_id'
     ];
