@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CartController;
+use App\Http\Controllers\CartItemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,7 +16,7 @@ use App\Http\Controllers\CartController;
 */
 
 Route::group(['prefix' => 'cart'], function () {
-    Route::post('/add-items', [CartController::class, 'add']);
-    Route::delete('/remove-items', [CartController::class, 'remove']);
-    Route::post('/checkout', [CartController::class, 'checkout']);
+    Route::post('/add-items', [CartItemController::class, 'add']);
+    Route::delete('/remove-items', [CartItemController::class, 'remove']);
+    Route::post('/checkout', [CartItemController::class, 'checkout']);
 });
