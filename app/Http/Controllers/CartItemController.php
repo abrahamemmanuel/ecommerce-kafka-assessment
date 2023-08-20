@@ -8,11 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
-class CartController extends Controller implements CartInterface
+class CartItemController extends Controller implements CartInterface
 {
     public function add(Request $request): JsonResponse|Response
     {
-        
+        dd('Hello World');
     }
 
     public function remove(Request $request): JsonResponse|Response
