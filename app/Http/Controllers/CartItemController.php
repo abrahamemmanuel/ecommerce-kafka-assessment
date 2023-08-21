@@ -10,9 +10,6 @@ use Illuminate\Http\Response;
 use App\Http\Requests\CartItemRequest;
 use App\Services\CartItemService;
 use App\Repositories\CartItemRepository;
-use App\Models\CartItem;
-use App\Models\Order;
-use App\Models\OrderItem;
 
 class CartItemController extends Controller implements CartItemInterface
 {
