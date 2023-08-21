@@ -11,6 +11,6 @@ use App\Http\Requests\CartItemRequest;
 interface CartItemInterface
 {
     public function add(CartItemRequest $request): JsonResponse|Response;
-    public function remove(Request $request): JsonResponse|Response;
-    public function checkout(Request $request): JsonResponse|Response;
+    public function remove(CartItemRequest $request): JsonResponse|Response;
+    public function checkout(CartItemRequest $request): JsonResponse|Response;
 }
