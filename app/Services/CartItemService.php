@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Repositories\CartItemRepository;
+use App\Services\KafkaProducerService;
 use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\OrderItem;

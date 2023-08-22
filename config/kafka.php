@@ -43,7 +43,7 @@ return [
     /*
      | Choose if debug is enabled or not.
      */
-    'debug' => env('KAFKA_DEBUG', false),
+    'debug' => env('KAFKA_DEBUG', true),
 
     /*
      | Repository for batching messages together
