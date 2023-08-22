@@ -1,7 +1,3 @@
-# Project Name
-
-Welcome to Project Name! This project contains tests to ensure the functionality of the application. You can run these tests using PHPUnit.
-
 ## Getting Started
 
 1.  Clone the repository to your local machine:
