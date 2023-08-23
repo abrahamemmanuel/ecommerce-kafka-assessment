@@ -14,8 +14,8 @@ use App\Services\KafkaProducerService;
 
 class CartItemController extends Controller implements CartItemInterface
 {
-    protected $cartItemService;
-    protected $kafkaProducerService;
+    protected object $cartItemService;
+    protected object $kafkaProducerService;
 
     public function __construct(CartItemService $cartItemService, KafkaProducerService $kafkaProducerService)
     {
@@ -25,10 +25,15 @@ class CartItemController extends Controller implements CartItemInterface
 
     public function add(CartItemRequest $request): JsonResponse|Response
     {
-        $this->kafkaProducerService->produce($request->validated());
-        return response()->json([
-            'message' => 'Item added to cart'
-        ], Response::HTTP_OK);
+        return $this->cartItemService->addCartItem($request->all())
+            ?
+                response()->json([
+                    'message' => 'Item added to cart'
+                ], Response::HTTP_CREATED)
+            :
+                response()->json([
+                    'message' => 'Item not added to cart'
+                ], Response::HTTP_BAD_REQUEST);
     }
 
     public function remove(CartItemRequest $request): JsonResponse|Response

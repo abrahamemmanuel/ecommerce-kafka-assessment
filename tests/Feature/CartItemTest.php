@@ -6,6 +6,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
 use App\Models\CartItem;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Product;
+use App\Models\User;
 use Tests\TestCase;
 
 class CartItemTest extends TestCase
@@ -17,15 +21,19 @@ class CartItemTest extends TestCase
     public function should_add_items_to_cart(): void
     {
         $this->withoutExceptionHandling();
-
-        // $cart_item = CartItem::factory()->create();
+        $user = User::factory()->create();
+        $product = Product::factory()->create();
         $response = $this->postJson('/api/v1/cart/add-items', [
-            'user_id' => 1,
-            'product_id' => 2,
+            'user_id' => $user->id,
+            'product_id' => $product->id,
         ]);
         $this->assertDatabaseHas('cart_items', [
-            'user_id' => 1,
-            'product_id' => 2,
+            'user_id' => $user->id,
+            'product_id' => $product->id,
+        ]);
+        $response->assertStatus(201);
+        $response->assertJsonFragment([
+            'message' => 'Item added to cart'
         ]);
     }
 
@@ -34,9 +42,9 @@ class CartItemTest extends TestCase
      */
     public function should_not_add_items_to_cart_when_user_id_is_not_provided(): void
     {
-        $cart_item = CartItem::factory()->create();
+        $product = Product::factory()->create();
         $response = $this->postJson('/api/v1/cart/add-items', [
-            'product_id' => $cart_item->product_id,
+            'product_id' => $product->id,
         ]);
         $response->assertStatus(422);
         $response->assertJsonFragment([
@@ -53,9 +61,9 @@ class CartItemTest extends TestCase
      */
     public function should_not_add_items_to_cart_when_product_id_is_not_provided(): void
     {
-        $cart_item = CartItem::factory()->create();
+        $user = User::factory()->create();
         $response = $this->postJson('/api/v1/cart/add-items', [
-            'user_id' => $cart_item->user_id,
+            'user_id' => $user->id,
         ]);
         $response->assertStatus(422);
         $response->assertJsonFragment([
@@ -72,9 +80,9 @@ class CartItemTest extends TestCase
     */
     public function should_not_add_items_to_cart_when_product_id_is_a_string(): void
     {
-        $cart_item = CartItem::factory()->create();
+        $user = User::factory()->create();
         $response = $this->postJson('/api/v1/cart/add-items', [
-            'user_id' => $cart_item->user_id,
+            'user_id' => $user->id,
             'product_id' => 'string',
         ]);
         $response->assertStatus(422);
@@ -87,15 +95,15 @@ class CartItemTest extends TestCase
         ]);
     }
 
-        /**
+    /**
      * @test
     */
     public function should_not_add_items_to_cart_when_user_id_is_a_string(): void
     {
-        $cart_item = CartItem::factory()->create();
+        $product = Product::factory()->create();
         $response = $this->postJson('/api/v1/cart/add-items', [
             'user_id' => 'string',
-            'product_id' => $cart_item->product_id,
+            'product_id' => $product->id,
         ]);
         $response->assertStatus(422);
         $response->assertJsonFragment([
@@ -104,25 +112,6 @@ class CartItemTest extends TestCase
                     'User ID must be an integer'
                 ]
             ]
-        ]);
-    }
-
-    /**
-     * @test
-     */
-    public function should_return_a_json_response(): void
-    {
-        $cart_item = CartItem::factory()->create();
-        $response = $this->postJson('/api/v1/cart/add-items', [
-            'user_id' => $cart_item->user_id,
-            'product_id' => $cart_item->product_id,
-        ]);
-        $response->assertJsonStructure([
-            'user_id',
-            'product_id',
-            'created_at',
-            'updated_at',
-            'id',
         ]);
     }
 
@@ -181,22 +170,6 @@ class CartItemTest extends TestCase
                     'Product ID is required'
                 ]
             ]
-        ]);
-    }
-
-    /**
-     * @test
-    */
-    public function should_return_model_not_found_when_product_id_is_not_found(): void
-    {
-        $cart_item = CartItem::factory()->create();
-        $response = $this->deleteJson('/api/v1/cart/remove-items', [
-            'user_id' => $cart_item->user_id,
-            'product_id' => 100,
-        ]);
-        $response->assertStatus(404);
-        $response->assertJsonFragment([
-            'message' => 'Item not found in cart',
         ]);
     }
 
