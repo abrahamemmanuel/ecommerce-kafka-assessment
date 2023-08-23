@@ -10,21 +10,25 @@ use Illuminate\Http\Response;
 use App\Http\Requests\CartItemRequest;
 use App\Services\CartItemService;
 use App\Repositories\CartItemRepository;
+use App\Services\KafkaProducerService;
 
 class CartItemController extends Controller implements CartItemInterface
 {
     protected $cartItemService;
-    protected $cartItemRepository;
+    protected $kafkaProducerService;
 
-    public function __construct(CartItemService $cartItemService, CartItemRepository $cartItemRepository)
+    public function __construct(CartItemService $cartItemService, KafkaProducerService $kafkaProducerService)
     {
         $this->cartItemService = $cartItemService;
-        $this->cartItemRepository = $cartItemRepository;
+        $this->kafkaProducerService = $kafkaProducerService;
     }
 
     public function add(CartItemRequest $request): JsonResponse|Response
     {
-        return response()->json($this->cartItemService->addCartItem($request->validated()), Response::HTTP_CREATED);
+        $this->kafkaProducerService->produce($request->validated());
+        return response()->json([
+            'message' => 'Item added to cart'
+        ], Response::HTTP_OK);
     }
 
     public function remove(CartItemRequest $request): JsonResponse|Response

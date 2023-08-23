@@ -5,11 +5,19 @@ namespace App\Services;
 
 use Junges\Kafka\Facades\Kafka;
 use Junges\Kafka\Message\Message;
-use Illuminate\Http\Request;
+use App\Services\KafkaConsumerService;
+use App\Services\CartItemService;
 
 class KafkaProducerService
 {
-    public function produce(array $data): void
+    protected $cartItemService;
+
+    public function __construct(CartItemService $cartItemService)
+    {
+        $this->cartItemService = $cartItemService;
+    }
+
+    public function produce(array $data): bool
     {
         $new_message = new Message(
             body: [
@@ -18,6 +26,11 @@ class KafkaProducerService
             ]
         );
         $producer = Kafka::publishOn('cart_items')->withMessage($new_message);
-        $producer->send();
+        $consumer = \Junges\Kafka\Facades\Kafka::createConsumer(['cart_items'])->withHandler(new KafkaConsumerService($this->cartItemService));
+        $consumer = $consumer->build();
+        $consumer->consume();
+        dump($producer);
+        dump($consumer);
+        return $producer->send();
     }
 }

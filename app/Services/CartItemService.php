@@ -18,15 +18,15 @@ class CartItemService
         $this->cartItemRepository = $cartItemRepository;
     }
 
-    public function addCartItem(array $data): CartItem
+    public function addCartItem(array $data): void
     {
-        return $this->cartItemRepository->create($data);
+        $this->cartItemRepository->create($data);
     }
 
     public function removeCartItem(int $user_id, int $product_id): bool
     {
         $cart_item = $this->cartItemRepository->findByUserAndProduct($user_id, $product_id);
-
+        
         if ($cart_item) {
             $this->cartItemRepository->delete($cart_item);
             return true;

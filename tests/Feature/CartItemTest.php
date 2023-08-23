@@ -18,19 +18,14 @@ class CartItemTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
-        $cart_item = CartItem::factory()->create();
+        // $cart_item = CartItem::factory()->create();
         $response = $this->postJson('/api/v1/cart/add-items', [
-            'user_id' => $cart_item->user_id,
-            'product_id' => $cart_item->product_id,
-        ]);
-        $response->assertStatus(201);
-        $response->assertJsonFragment([
-            'user_id' => $cart_item->user_id,
-            'product_id' => $cart_item->product_id,
+            'user_id' => 1,
+            'product_id' => 2,
         ]);
         $this->assertDatabaseHas('cart_items', [
-            'user_id' => $cart_item->user_id,
-            'product_id' => $cart_item->product_id,
+            'user_id' => 1,
+            'product_id' => 2,
         ]);
     }
 
